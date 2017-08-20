@@ -6,7 +6,6 @@ import akka.http.scaladsl.server.{Directives, Route}
 import akka.stream.ActorMaterializer
 import json.EventJsonProtocol
 import kafka.KafkaConfig
-import receiver.ReceiverApp.system
 import spray.json.JsValue
 
 import scala.concurrent.ExecutionContextExecutor

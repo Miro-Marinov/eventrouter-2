@@ -32,7 +32,9 @@ object ConsumerApp extends App {
     Consumer.committableSource(kafkaConfig.consumerSettings, Subscriptions.topics(topic))
       .map(msg => (msg.committableOffset, msg.record.value()))
       // batch if consuming from Kafka is too fast
-      .batch(max = 20, { case (offset, msg) => (CommittableOffsetBatch.empty.updated(offset), ArrayBuffer[String](msg)) }) { (acc, tuple) => (acc._1.updated(tuple._1), acc._2 :+ tuple._2) }
+      .batch(max = 20, {
+        case (offset, msg) => (CommittableOffsetBatch.empty.updated(offset), ArrayBuffer[String](msg))
+      }) { (acc, tuple) => (acc._1.updated(tuple._1), acc._2 :+ tuple._2) }
       //Take the first element of the tuple (set of commit numbers) to add to kafka commit log and then return the collection of grouped messages
       .map { case (offsets, msgs) => processSync(msgs); (offsets, msgs) }
       .mapAsync(4)(tuple => commitOffsetsToKafka[String](tuple))
