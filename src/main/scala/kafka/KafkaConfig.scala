@@ -27,8 +27,7 @@ case class KafkaConfig(system: ActorSystem) extends SprayJsonSupport with EventJ
     Flow[JsValue]
       .map { msg =>
         val topic = getTopic(msg).getOrElse("deadLetter")
-        println(msg.toString())
-        println(topic)
+        println(s"Sending ${msg.toString()} to kafka topic $topic")
         new ProducerRecord[Array[Byte], String](topic, msg.toString())
       }
       .to(Producer.plainSink(producerSettings))
