@@ -29,8 +29,7 @@ case class KafkaConfig(system: ActorSystem) extends SprayJsonSupport with EventJ
         val topic = getTopic(msg).getOrElse("deadLetter")
         println(msg.toString())
         println(topic)
-        // For some reason it only works if I hardcore the topic here
-        new ProducerRecord[Array[Byte], String]("firstTopic", msg.toString())
+        new ProducerRecord[Array[Byte], String](topic, msg.toString())
       }
       .to(Producer.plainSink(producerSettings))
 
